@@ -1,13 +1,22 @@
 package com.example.android.coffeeorder;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
 {
-    int quantity=0;
+    public static String message="";
+    int quantity=1;
+    public static String n="";
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -17,61 +26,55 @@ public class MainActivity extends AppCompatActivity
     public void increment(View v)
     {
         quantity= quantity+1;
-        if(quantity>=0)
+        if(quantity>100)
         {
-            display1(quantity);
+            quantity=100;
+            Toast.makeText(MainActivity.this, "Sorry, you can't have more than 100 coffees", Toast.LENGTH_LONG).show();
         }
-        else
-        {
-            display1(0);
-        }
+        display1(quantity);
     }
     public void decrement(View v)
     {
         quantity= quantity-1;
-        if(quantity>=0)
-        {
-            display1(quantity);
+        if(quantity<1) {
+            quantity = 1;
+            Toast.makeText(MainActivity.this, "Sorry, you can't have less than 1 coffee", Toast.LENGTH_LONG).show();
         }
-        else
-        {
-            quantity=0;
-            display1(quantity);
-        }
+        display1(quantity);
     }
-    public void submitOrder(View view)
+    public void details(View v)
     {
-        String message= createOrderSummary(quantity);
-        if(quantity>0) {
-            display1(quantity);
-            display2(message);
+        EditText name = (EditText) findViewById(R.id.name);
+        n = name.getText().toString();
+        CheckBox cream= (CheckBox)findViewById(R.id.whipped_cream);
+        Boolean isWhipped= cream.isChecked();
+        CheckBox choco= (CheckBox)findViewById(R.id.whipped_cream);
+        Boolean isChoco= choco.isChecked();
+        int total = quantity * 5;
+        if (isWhipped) {
+            total = total + (quantity * 1);
         }
-        else
-        {
-            display1(0);
-            display2(message);
+        if (isChoco) {
+            total = total + (quantity * 2);
         }
+        message = createOrderSummary(quantity, isChoco, isWhipped, n, total);
+        Intent detailInt= new Intent(MainActivity.this,details.class);
+        startActivity(detailInt);
     }
     public void display1(int d)
     {
         TextView quan= (TextView)findViewById(R.id.quantity_textView);
         quan.setText(""+d);
     }
-    public void display2(String m)
-    {
-        TextView prize= (TextView)findViewById(R.id.display_text_view);
-        prize.setText(m);
-    }
-    public String createOrderSummary(int q)
+    public String createOrderSummary(int q, Boolean isChoco, Boolean isWhipped, String name, int t)
     {
         String priceMessage="";
-        if(quantity>0) {
-            priceMessage = "Name: Amulya Agrawal\n Quantity:" + q + "\nTotal: $" + (q * 5) + "\n Thank You!";
-        }
-        else
-        {
-            priceMessage = "Name: Amulya Agrawal\n Quantity:" + 0 + "\nTotal: $" + (0 * 5) + "\n Thank You!";
-        }
+        priceMessage = "Name: "+ name;
+        priceMessage+="\nAdd Whipped cream? "+isWhipped;
+        priceMessage+= "\n Add Chocolate?" + isChoco;
+        priceMessage+= "\n Quantity:" + q ;
+        priceMessage+="\nTotal: $" + t;
+        priceMessage+= "\n Thank You!";
         return (priceMessage);
     }
 }

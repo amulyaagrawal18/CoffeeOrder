@@ -10,9 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
+        </activity>
+        <activity android:name=".details">
+        </activity>
+        <activity android:name=".contacts">
+        </activity>
+        <activity android:name=".home_activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
